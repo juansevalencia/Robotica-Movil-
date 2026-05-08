@@ -38,4 +38,39 @@ Todo esto es asi porque yo en mis calculos con los ticks calculo la velocidad de
 
 Y usamos tf que es donde se acumulan todos estos frames e arbol de frames.
 
-## 
+### Source
+
+Cada vez que abro una terminal, shell no tiene idea donde ros2 o mis paquees estan. 
+El comando source lee un arhcivo setup y lo agrega a todos mis paths en la actual  sesion shell. Dura lo que dure esa terminal.
+
+1. source /opt/ros/humble/setup.bash          # 1. ROS2 itself (humble)
+
+2. source /root/ros2_ws/install/setup.bash    # 2. robmovil_msgs + sim_ros2_interface (pre-built by teacher)
+
+3. source /root/ros2_ws/install/setup.bash    # 3. your modelo_omnidireccional (same file, now includes yours too)
+
+### Colcon build
+
+El paso 2 y 3 son las mismos archivos.Despues de hacer colcon build, mis paquetes se añaden a install.
+
+### Como automatizarlo 
+Si yo borrro (docker rm ros2_omni) y lo recreo, se pierden los packetes compilados.
+
+### ./bashrc | grep source 
+Buscamos archivos source dentro del .bashrc y vemos q no vamos a tener que tipear source manualmente porque el workspace (omni), ros2 se incluyen automaticamente,
+
+.ttt
+
+Nos los dan sin script de ros2.
+
+1. Necesitamos que se traiga el simros2 plugin
+
+2. que lea los valores de los encoders de las ruedas.
+
+3. Publicarlos en /robot/encoders
+
+4. Subscribirse a los comandos de velocidad de las ruedas
+
+## Controlador a lazo abierto y cerrado.
+
+Cualquier pose es alcanzable sin importar orientación, ya que es holonómico el robot. Esto simplifica los metodos de control y convergencia a pose objetivo.
