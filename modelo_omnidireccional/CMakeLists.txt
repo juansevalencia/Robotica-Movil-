@@ -31,3 +31,17 @@ install(TARGETS
 )
 
 ament_package()
+# --- trajectory_pilot_node (Ejercicio 2) ---
+add_executable(trajectory_pilot_node
+  src/trajectory_generator.cpp
+  src/trajectory_pilot.cpp
+  src/trajectory_pilot_node.cpp
+)
+ament_target_dependencies(trajectory_pilot_node
+  rclcpp std_msgs geometry_msgs nav_msgs
+  robmovil_msgs tf2 tf2_ros tf2_geometry_msgs
+)
+install(TARGETS
+  trajectory_pilot_node
+  DESTINATION lib/${PROJECT_NAME}
+)

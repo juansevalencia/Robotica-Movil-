@@ -49,7 +49,22 @@ c/u :
 
 2. ros2 run modelo_omnidireccional omni_odometry_node
 
-3. rviz2 -d /root/coppeliaSim/tpfinal.rviz
+3. 
 
 En este paso se tiene que haber cargado unas flechas coloridas que son los frames del robot en rviz.
 
+
+modelo_omnidireccional/
+-CMakeLists.txt -> Le dice a colcon como compilar cada nodo.
+-package.xml -> Declara dependencias
+-src/
+    -omni_odometry.h -> Declara la clase
+    -omni_odometry.cpp -> class implementation
+    -omni_odometry_node.cpp ->  main() - entrada
+    
+    -types.h -> estructura de datos compartida
+    -trajectory_generator.h -> declaracion de clase
+    -trajectoty_generator.cpp -> genera waypoints
+    -trajectory_pilot.h -> declaracion de clase
+    -trajectory_pilot.cpp -> logica del controlador
+    -trajectory_pilote_node.cpp -> main() , entrada

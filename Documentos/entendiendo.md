@@ -73,4 +73,63 @@ Nos los dan sin script de ros2.
 
 ## Controlador a lazo abierto y cerrado.
 
-Cualquier pose es alcanzable sin importar orientación, ya que es holonómico el robot. Esto simplifica los metodos de control y convergencia a pose objetivo.
+El robot tiene que seguir una trayectoria de 2m cuadrada, seguir las esquinas siempre mirando para afuera. La trayectoria es fija, los waypoints no cambian, pero la trayectoria real entre ellos si puede variar por errores de movimiento. Por eso usamos el controlador paa corregir.
+
+v = Kp.e
+
+e = Xgoal - Xrobot
+
+Kp -> controla q tan agresivo es el mov, si es chico el Kp -> Robot lento, si es grande -> robot rapido pero puede pasarse del obj.
+
+El error se computa en cuestion de las cordenadas del mapa y se rota en su angulo.
+
+error_x_robot =  cos(θ) × error_x_map + sin(θ) × error_y_map
+
+error_y_robot = -sin(θ) × error_x_map + cos(θ) × error_y_map
+
+En vez de tener un unico objetivo, tiene muchos chicos. Con position_tolerance y angle_tolerance, pasa dirctamente al otro.
+
+atan2(y,x) para que apunte por fuera del centro.
+
+Usamos 20 wayponts por recorrido entre esquina y esquina
+
+3. Implementar un nodo de ROS el cual debe:
+a. Publicar comandos de velocidad de control (lineal y angular) de manera peri´odica a trav´es
+del t´opico /robot/cmd vel que permitan la convergencia hac´ıa una pose objetivo.
+b. Utilizar la estimaci´on de la pose actual provista como la transformaci´on map → base link
+(mapTR) como feedback del m´etodo.
+c. Redefinir la pose objetivo actual si se considera que el robot se encuentra lo suficientemente
+cerca (Pursuit-Based goal selection).
+
+
+## EKF - Filtro de Kalman.
+
+1. Implementar un nodo de ROS2 que interprete la informaci´on provista por el sensor LiDAR,
+debe:
+a. Recibir los escaneos por el tópico /robot/front laser/scan y detectar postes que se
+encuentren frente al robot por medio del método de clusterizaci´on.
+b. Publicar mensajes de tipo robmovil msgs/msg/LandmarkArray por el t´opico /landmarks.
+La información publicada de las referencias (landmarks) debe estar en relaci´on al marco
+de coordenadas del robot.
+
+
+
+
+
+2. Modelar el estado⃗x, las entradas de control⃗u, las mediciones⃗z, el ruido del actuador⃗w, el ruido
+del sensor⃗v, el modelo de movimiento f (⃗x,⃗u,⃗w), el modelo de sensado h(⃗x,⃗v) y los respectivos
+Jacobianos.
+3. Proponer matrices de covarianza iniciales para el modelo de movimiento y de sensado de manera
+que reflejen una mayor incertidumbre al momento de predecir la pose. Se espera que en la etapa
+de correcci´on la informaci´on proveniente de los sensores sea considerada “m´as confiable”.
+4. Implementar un nodo de ROS2 que aplique el modelo del filtro:
+6
+a. Considerar que el mapa de postes se encuentra en referencia al marco de coordenadas del
+mapa. Esto se debe a que, en esta oportunidad, el mapa no es construido a partir del
+primer sensado del l´aser (a diferencia a lo visto durante la cursada).
+b. Utilizar la estimaci´on odom´etrica publicada por el t´opico /robot/odometry como entrada
+de control del m´etodo.
+c. Se debe publicar una estimaci´on refinada de la pose del robot a trav´es de una transfor-
+maci´on map → base link ekf (mapTRekf ).
+5. Realizar el seguimiento de la trayectoria planteada anteriormente utilizando la estimaci´on refi-
+nada de la pose y el m´etodo de lazo cerrado.
